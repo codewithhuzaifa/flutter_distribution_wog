@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest  # Required for iOS builds
 
     steps:
       - uses: actions/checkout@v3
@@ -21,26 +21,46 @@ jobs:
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
           FIREBASE_OPTION: ${{ secrets.FIREBASE_OPTION }}
+          GOOGLE_SERVICE_INFO_PLIST: ${{ secrets.GOOGLE_SERVICE_INFO_PLIST }}
         run: |
           echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
           echo "$FIREBASE_OPTION" > lib/firebase_options.dart
+          echo "$GOOGLE_SERVICE_INFO_PLIST" > ios/Runner/GoogleService-Info.plist
 
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
       - run: flutter pub get
-      - run: flutter build apk --release
 
+      # Android Build
+      - run: flutter build apk --release
       - uses: actions/upload-artifact@v3
         with:
           name: release-apk
           path: build/app/outputs/apk/release/app-release.apk
 
-      - name: Upload to Firebase App Distribution
+      # iOS Build
+      - run: flutter build ipa --release
+      - uses: actions/upload-artifact@v3
+        with:
+          name: release-ipa
+          path: build/ios/ipa/*.ipa
+
+      # Upload Android APK to Firebase
+      - name: Upload Android APK to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.APPID }}
           token: ${{ secrets.TOKEN }}
           groups: pre-testers
           file: build/app/outputs/apk/release/app-release.apk
+
+      # Upload iOS IPA to Firebase
+      - name: Upload iOS IPA to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.IOSID }}
+          token: ${{ secrets.TOKEN }}
+          groups: pre-testers
+          file: build/ios/ipa/*.ipa
