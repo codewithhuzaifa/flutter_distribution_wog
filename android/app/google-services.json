@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "10227776420",
+    "project_id": "distributionwog",
+    "storage_bucket": "distributionwog.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:10227776420:android:e0d1d58da3fba4f78d5f31",
+        "android_client_info": {
+          "package_name": "com.example.flutter_wog_distribution"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApusqBmgYpMD6fMIGHSLpzEtqXc-2fHug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
